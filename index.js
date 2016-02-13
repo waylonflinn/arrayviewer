@@ -46,9 +46,9 @@ if(require.main === module){
 		.usage('View binary array data\nUsage: $0 [options] <file>')
 		.demand(1)
 		.default('i', 0).alias('i', 'index')
-		.describe('i', 'index of data to show')
+		.describe('i', 'index of element in array to show')
 		.default('c', 4).alias('c', 'context')
-		.describe('c', 'context of data to show (on either side)')
+		.describe('c', 'context around element to show (on both sides)')
 		.boolean('v')
 		.help('h').alias('h', 'help')
 		.argv
@@ -67,6 +67,7 @@ if(require.main === module){
 			console.log(err);
 			return;
 		}
+
 		if(argv.v) console.log("Length: " + arr.length);
 
 		console.log(showIndex(arr, index, context));
