@@ -87,7 +87,7 @@ function getTypedArrayConstructor(type){
 	return type_map[type];
 }
 
-function getLinearIndex(shape, coords){
+function toLinearIndex(shape, coords){
 	var index = 0,
 		subspace = 1;
 
@@ -97,6 +97,21 @@ function getLinearIndex(shape, coords){
 	}
 	return index;
 
+}
+
+function fromLinearIndex(shape, index){
+	var rem = index,
+		subspace = 1,
+		coords = new Array(shape.length);
+
+	for(var i = shape.length - 1; i >= 0; i--){
+		subspace *= shape[i];
+		coords[i] = rem % subspace;
+		rem -= coords[i];
+		rem /= shape[i];
+	}
+
+	return coords;
 }
 
 // called directly?
@@ -141,10 +156,12 @@ if(require.main === module){
 				var j = parseInt(argv.j) || 0;
 				var k = parseInt(argv.k) || 0;
 				meta.coords = [index, j, k];
-				index = getLinearIndex(meta.shape, meta.coords);
+				index = toLinearIndex(meta.shape, meta.coords);
 				meta.index = index;
 			} else{
 				meta.index = index;
+				// use shape to find row, column, channel from linear index
+				meta.coords = fromLinearIndex(meta.shape, meta.index);
 			}
 
 			aloader.load(arr_path, type, function(err, arr){
@@ -171,7 +188,8 @@ if(require.main === module){
 else {
 	// nope, just expose our functions
 	module.exports = {
-		"getArray" : getArray,
-		"showIndex" : showIndex
+		"showIndex" : showIndex,
+		"toLinearIndex" : toLinearIndex,
+		"fromLinearIndex" : fromLinearIndex
 	};
 }
