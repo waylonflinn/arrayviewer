@@ -4,7 +4,8 @@
 	node arrayviewer path index context
  */
 var aloader = require('arrayloader'),
-	floader = require('floader');
+	floader = require('floader'),
+	path = require('path');
 
 
 function showIndex(a, index, context){
@@ -58,9 +59,13 @@ function showHeader(arr, meta){
 			computed_size *= meta.shape[i];
 		}
 
+		var coord_string = meta.coords ? " ("+JSON.stringify(meta.coords)+")": "";
+
 		console.log("Shape:  " + JSON.stringify(meta.shape));
 		console.log("Type:   " + meta.type);
 		console.log("Valid:  " + (computed_size == arr.length));
+		console.log("Index:  " + meta.index + coord_string);
+
 	}
 }
 
@@ -81,6 +86,19 @@ function getTypedArrayConstructor(type){
 
 	return type_map[type];
 }
+
+function getLinearIndex(shape, coords){
+	var index = 0,
+		subspace = 1;
+
+	for(var i = shape.length - 1; i >= 0; i--){
+		index += coords.length > i ? coords[i] * subspace : 0;
+		subspace *= shape[i];
+	}
+	return index;
+
+}
+
 // called directly?
 if(require.main === module){
 	// yes, parse command line args and show something
@@ -88,11 +106,15 @@ if(require.main === module){
 		.usage('View binary array data\nUsage: $0 [options] <file>')
 		.demand(1)
 		.default('i', 0).alias('i', 'index')
-		.describe('i', 'index of element in array to show')
+		.describe('i', 'index of element in array to show (row in shaped mode)')
+		.default('j', undefined)
+		.describe('j', 'column in array to show (requires meta)')
+		.default('k', undefined)
+		.describe('k', 'column in array to show (requires meta)')
 		.default('c', 4).alias('c', 'context')
 		.describe('c', 'context around element to show (on both sides)')
-		.boolean('m')
-		.boolean('v')
+		.boolean('m').describe('m', 'look for metadata (.meta)')
+		.boolean('v').describe('v', 'show array info header')
 		.help('h').alias('h', 'help')
 		.argv
 
@@ -101,7 +123,6 @@ if(require.main === module){
 		context = argv.c;
 
 	if(argv.m){
-		var path = require('path');
 
 		path_obj = path.parse(arr_path);
 
@@ -116,13 +137,23 @@ if(require.main === module){
 
 			var type = getTypedArrayConstructor(meta.type);
 
+			if(argv.j != void(0) || argv.k != void(0)){
+				var j = parseInt(argv.j) || 0;
+				var k = parseInt(argv.k) || 0;
+				meta.coords = [index, j, k];
+				index = getLinearIndex(meta.shape, meta.coords);
+				meta.index = index;
+			} else{
+				meta.index = index;
+			}
+
 			aloader.load(arr_path, type, function(err, arr){
 
 				handleError(err, arr, "Couldn't load array at: " + arr_path);
 
 				if(argv.v) showHeader(arr, meta);
 
-				console.log(showIndex(arr, index, context));
+				console.log(showIndex(arr, meta.index, context));
 			});
 		});
 	} else {
