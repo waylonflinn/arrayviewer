@@ -64,6 +64,23 @@ function showHeader(arr, meta){
 	}
 }
 
+var type_map = {
+
+	"int8" : Int8Array,
+	"uint8" : Uint8Array,
+	"int16" : Int16Array,
+	"uint16" : Uint16Array,
+	"int32" : Int32Array,
+	"uint32" : Uint32Array,
+	"float32" : Float32Array,
+	"float64" : Float64Array
+};
+
+function getTypedArrayConstructor(type){
+	type = type.toLowerCase();
+
+	return type_map[type];
+}
 // called directly?
 if(require.main === module){
 	// yes, parse command line args and show something
@@ -97,7 +114,9 @@ if(require.main === module){
 
 			var meta = JSON.parse(meta_string);
 
-			aloader.load(arr_path, Float32Array, function(err, arr){
+			var type = getTypedArrayConstructor(meta.type);
+
+			aloader.load(arr_path, type, function(err, arr){
 
 				handleError(err, arr, "Couldn't load array at: " + arr_path);
 
