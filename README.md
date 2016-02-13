@@ -4,14 +4,39 @@ View binary array data stored in files, from node, the browser and the command l
 `npm install arrayviewer`
 
 # Usage
-Show the 4th element in an array stored in a file at `./data/a.arr`:
+Show the 4th element (`-i 3`) in an array stored in a file at `./data/a.arr`:
 
 `node arrayviewer ./data/a.arr -i 3`
 
-Show the 10th element, with more context.
+produces something like,
+
+```
+[126.48208618164062, 127.23143005371094, 136.79074096679688,
+-->126.48942565917969
+127.26338195800781, 136.84552001953125, 126.47312927246094, 127.27062225341797, ...]
+```
+
+Show the 10th element, with more context (`-c 6`).
 
 `node arrayviewer ./data/a.arr -i 9 -c 6`
 
+might produce,
+```
+[..., 126.48942565917969, 127.26338195800781, 136.84552001953125, 126.47312927246094, 127.27062225341797, 136.86407470703125,
+-->126.44374084472656
+127.25633239746094, 136.88494873046875, 126.36851501464844, 127.19410705566406, 136.8431396484375, 126.31245422363281, ...]
+```
+
+Show some extra information with `-v`,
+
+`node arrayviewer ./data/a.arr -i 9 -c 6 -v`
+
+```
+Length: 150528
+[..., 126.48942565917969, 127.26338195800781, 136.84552001953125, 126.47312927246094, 127.27062225341797, 136.86407470703125,
+-->126.44374084472656
+127.25633239746094, 136.88494873046875, 126.36851501464844, 127.19410705566406, 136.8431396484375, 126.31245422363281, ...]
+```
 # Metadata
 
 `node arrayviewer ./data/a.arr -i 9 -c 6 -m`
@@ -42,6 +67,10 @@ as the array with the `.meta` extension. The `meta` file has the following forma
 ```
 
 These values match the [numpy dtypes](http://docs.scipy.org/doc/numpy-1.10.1/user/basics.types.html)
+
+Providing a meta file allows you to index into an array using
+`-i`, `-j`, `-k` to specify row, column and channel, respectively. It also
+allows parsing of array types other than `Float32Array`.
 
 # Numpy
 
