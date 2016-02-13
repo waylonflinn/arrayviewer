@@ -43,6 +43,7 @@ function showIndex(a, index, context){
 if(require.main === module){
 	// yes, parse command line args and show something
 	var argv = require('yargs')
+		.command('arrayviewer', 'View binary array data')
 		.demand(1)
 		.default('i', 0)
 		.alias('i', 'index')
