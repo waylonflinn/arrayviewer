@@ -12,7 +12,8 @@
   "homepage": "https://github.com/waylonflinn/arrayviewer",
   "keywords": [
     "TypedArray",
-    "binary"
+    "binary",
+    "data"
   ],
   "main": "index.js",
   "name": "arrayviewer",
