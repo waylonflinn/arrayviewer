@@ -1,9 +1,23 @@
 View binary array data stored in files, from node, the browser and the command line.
 
+# Install
+`npm install arrayviewer`
+
+# Usage
+Shows the 4th element in the array.
+
+`node arrayviewer ./data/a.arr -i 3`
+
+Shows the 10th element in the array with more context.
+
+`node arrayviewer ./data/a.arr -i 9 -c 6`
+
 # Metadata
 
-Will also look (with the `-m` option) for a file of the same name as the array
-with the `.meta` extension. It has the following format
+`node arrayviewer ./data/a.arr -i 9 -c 6 -m`
+
+If the `-m` option is specified it will also look for a file of the same name
+as the array with the `.meta` extension. The `meta` file has the following format
 
 ```json
 {
@@ -12,7 +26,7 @@ with the `.meta` extension. It has the following format
 }
 ```
 
-`type` is string that maps to a `TypedArray` in the following way.
+`type` is a string that maps to a `TypedArray` in the following way.
 
 ```javascript
 {
