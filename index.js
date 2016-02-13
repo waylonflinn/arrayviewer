@@ -16,11 +16,11 @@ function showIndex(a, index, context){
 		i;
 
 
-	if(index > 1){
+	if(index > context){
 		result += "..., ";
 	}
-	if(index > context){
-		for(i = index - context; i < index && i < a.length; i++ ){
+	if(index > 0){
+		for(i = Math.max(index - context, 0); i < index && i < a.length; i++ ){
 			result += a[i] + ", ";
 		}
 	}
