@@ -6,6 +6,7 @@
   "homepage": "https://github.com/waylonflinn/weblas",
   "dependencies": {
       "arrayloader": "^1.0.1",
+      "floader" : "^1.0.1",
       "yargs" : "^3.32.0"
   },
   "description": "View binary array data",

@@ -3,13 +3,9 @@
 
 	node arrayviewer path index context
  */
-var loader = require('arrayloader');
+var aloader = require('arrayloader'),
+	floader = require('floader');
 
-
-function getArray(path, callback){
-
-	loader.load(path, Float32Array, callback);
-}
 
 function showIndex(a, index, context){
 	var result = "[",
@@ -39,6 +35,35 @@ function showIndex(a, index, context){
 	return result;
 }
 
+var META_EXT = '.meta';
+
+function handleError(err, obj, message){
+
+	if(!obj){
+		console.log(message);
+		console.log('\t' + err.message);
+		process.exit(1);
+	} else if(err) {
+		console.log(err);
+		process.exit(1);
+	}
+}
+
+function showHeader(arr, meta){
+
+	console.log("Length: " + arr.length);
+	if(meta){
+		var computed_size = 1;
+		for(var i = 0; i < meta.shape.length; i++){
+			computed_size *= meta.shape[i];
+		}
+
+		console.log("Shape:  " + JSON.stringify(meta.shape));
+		console.log("Type:   " + meta.type);
+		console.log("Valid:  " + (computed_size == arr.length));
+	}
+}
+
 // called directly?
 if(require.main === module){
 	// yes, parse command line args and show something
@@ -49,29 +74,49 @@ if(require.main === module){
 		.describe('i', 'index of element in array to show')
 		.default('c', 4).alias('c', 'context')
 		.describe('c', 'context around element to show (on both sides)')
+		.boolean('m')
 		.boolean('v')
 		.help('h').alias('h', 'help')
 		.argv
 
-	var path = argv._[0],
+	var arr_path = argv._[0],
 		index = argv.i,
 		context = argv.c;
 
-	getArray(path, function(err, arr){
+	if(argv.m){
+		var path = require('path');
 
-		if(!arr){
-			console.log("Couldn't load array at: " + path);
-			console.log('\t' + err.message);
-			return;
-		} else if(err) {
-			console.log(err);
-			return;
-		}
+		path_obj = path.parse(arr_path);
 
-		if(argv.v) console.log("Length: " + arr.length);
+		meta_path = path_obj.dir + "/" + path_obj.name + META_EXT;
 
-		console.log(showIndex(arr, index, context));
-	});
+		// look for meta file
+		floader.load(meta_path, function(err, meta_string){
+
+			handleError(err, meta_string, "Couldn't load meta data at: " + meta_path);
+
+			var meta = JSON.parse(meta_string);
+
+			aloader.load(arr_path, Float32Array, function(err, arr){
+
+				handleError(err, arr, "Couldn't load array at: " + arr_path);
+
+				if(argv.v) showHeader(arr, meta);
+
+				console.log(showIndex(arr, index, context));
+			});
+		});
+	} else {
+
+		aloader.load(arr_path, Float32Array, function(err, arr){
+
+			handleError(err, arr, "Couldn't load array at: " + arr_path);
+
+			if(argv.v) showHeader(arr, null);
+
+			console.log(showIndex(arr, index, context));
+		});
+	}
 }
 else {
 	// nope, just expose our functions
