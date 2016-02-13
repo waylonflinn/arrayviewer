@@ -68,9 +68,9 @@ as the array with the `.meta` extension. The `meta` file has the following forma
 
 These values match the [numpy dtypes](http://docs.scipy.org/doc/numpy-1.10.1/user/basics.types.html)
 
-Providing a meta file allows you to index into an array using
-`-i`, `-j`, `-k` to specify row, column and channel, respectively. It also
-allows parsing of array types other than `Float32Array`.
+In addition to allowing parsing of array types other than `Float32Array`,
+providing a meta file allows you to index into an array using
+`-i`, `-j`, `-k` to specify row, column and channel, respectively.
 
 # Numpy
 
