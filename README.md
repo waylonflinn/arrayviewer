@@ -4,11 +4,11 @@ View binary array data stored in files, from node, the browser and the command l
 `npm install arrayviewer`
 
 # Usage
-Shows the 4th element in the array.
+Show the 4th element in an array stored in a file at `./data/a.arr`:
 
 `node arrayviewer ./data/a.arr -i 3`
 
-Shows the 10th element in the array with more context.
+Show the 10th element, with more context.
 
 `node arrayviewer ./data/a.arr -i 9 -c 6`
 
@@ -42,3 +42,13 @@ as the array with the `.meta` extension. The `meta` file has the following forma
 ```
 
 These values match the [numpy dtypes](http://docs.scipy.org/doc/numpy-1.10.1/user/basics.types.html)
+
+# Numpy
+
+Write compatible arrays from numpy like this,
+```python
+# given array 'a'
+f = open('./data/a.arr', 'wb')
+f.write(a.astype(np.float32).tostring())
+f.close
+```
