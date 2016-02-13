@@ -50,6 +50,7 @@ if(require.main === module){
 		.default('c', 4)
 		.alias('c', 'context')
 		.describe('c', 'context of data to show (on either side)')
+		.boolean('v')
 		.argv
 
 	var path = argv._[0],
@@ -57,6 +58,9 @@ if(require.main === module){
 		context = argv.c;
 
 	getArray(path, function(err, arr){
+
+		if(argv.v) console.log("Length: " + arr.length);
+
 		console.log(showIndex(arr, index, context));
 	});
 }
