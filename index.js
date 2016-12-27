@@ -1,3 +1,4 @@
+#! /usr/bin/env node
 /* Read a binary array file as a Float32Array, then print the value at
 	the given index (with the specified amount of context)
 

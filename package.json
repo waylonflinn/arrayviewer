@@ -17,10 +17,13 @@
     "data"
   ],
   "main": "index.js",
+  "bin": {
+      "arrayviewer" : "index.js"
+  },
   "name": "arrayviewer",
   "repository": {
     "type": "git",
     "url": "git://github.com/waylonflinn/arrayviewer.git"
   },
-  "version": "1.1.0"
+  "version": "2.0.1"
 }

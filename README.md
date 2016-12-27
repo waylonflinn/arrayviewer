@@ -1,12 +1,12 @@
 View binary array data stored in files, from node, the browser and the command line.
 
 # Install
-`npm install arrayviewer`
+`npm install -g arrayviewer`
 
 # Usage
 Show the 4th element (`-i 3`) in an array stored in a file at `./data/a.arr`:
 
-`node arrayviewer ./data/a.arr -i 3`
+`arrayviewer ./data/a.arr -i 3`
 
 produces something like,
 
@@ -18,7 +18,7 @@ produces something like,
 
 Show the 10th element, with more context (`-c 5`).
 
-`node arrayviewer ./data/a.arr -i 9 -c 5`
+`arrayviewer ./data/a.arr -i 9 -c 5`
 
 might produce,
 ```
@@ -29,7 +29,7 @@ might produce,
 
 Show some extra information with `-v`,
 
-`node arrayviewer ./data/a.arr -i 9 -c 5 -v`
+`arrayviewer ./data/a.arr -i 9 -c 5 -v`
 
 ```
 Length: 150528
@@ -39,7 +39,7 @@ Length: 150528
 ```
 # Metadata
 
-`node arrayviewer ./data/a.arr -i 9 -c 6 -m`
+`arrayviewer ./data/a.arr -i 9 -c 6 -m`
 
 If the `-m` option is specified it will also look for a file of the same name
 as the array with the `.meta` extension. The `meta` file has the following format
