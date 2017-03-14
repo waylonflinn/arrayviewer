@@ -1,6 +1,9 @@
 #! /usr/bin/env node
-/* Read a binary array file as a Float32Array, then print the value at
+/* Read a binary array file as a TypedArray, then print the value at
 	the given index (with the specified amount of context)
+
+	File extension will be used to infer type of array. A metadata file
+	may also be specified.
 
 	node arrayviewer path index context
  */
@@ -71,7 +74,6 @@ function showHeader(arr, meta){
 }
 
 var type_map = {
-
 	"int8" : Int8Array,
 	"uint8" : Uint8Array,
 	"int16" : Int16Array,
@@ -82,10 +84,33 @@ var type_map = {
 	"float64" : Float64Array
 };
 
-function getTypedArrayConstructor(type){
+var extension_map = {
+	".i8" : Int8Array,
+	".u8" : Uint8Array,
+	".i16" : Int16Array,
+	".u16" : Uint16Array,
+	".i32" : Int32Array,
+	".u32" : Uint32Array,
+	".f32" : Float32Array,
+	".f64" : Float64Array
+};
+
+function constructorFromType(type){
 	type = type.toLowerCase();
 
-	return type_map[type];
+	if (type in type_map)
+		return type_map[type];
+	else
+		return Float32Array
+}
+
+function constructorFromExt(ext){
+	ext = ext.toLowerCase();
+
+	if (ext in extension_map)
+		return extension_map[ext];
+	else
+		return Float32Array
 }
 
 function toLinearIndex(shape, coords){
@@ -151,7 +176,7 @@ if(require.main === module){
 
 			var meta = JSON.parse(meta_string);
 
-			var type = getTypedArrayConstructor(meta.type);
+			var constructor = constructorFromType(meta.type);
 
 			if(argv.j != void(0) || argv.k != void(0)){
 				var j = parseInt(argv.j) || 0;
@@ -165,7 +190,7 @@ if(require.main === module){
 				meta.coords = fromLinearIndex(meta.shape, meta.index);
 			}
 
-			aloader.load(arr_path, type, function(err, arr){
+			aloader.load(arr_path, constructor, function(err, arr){
 
 				handleError(err, arr, "Couldn't load array at: " + arr_path);
 
@@ -176,7 +201,9 @@ if(require.main === module){
 		});
 	} else {
 
-		aloader.load(arr_path, Float32Array, function(err, arr){
+		var ext = path.extname(arr_path);
+		var constructor = constructorFromExt(ext);
+		aloader.load(arr_path, constructor, function(err, arr){
 
 			handleError(err, arr, "Couldn't load array at: " + arr_path);
 

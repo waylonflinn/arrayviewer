@@ -4,9 +4,9 @@ View binary array data stored in files, from node, the browser and the command l
 `npm install -g arrayviewer`
 
 # Usage
-Show the 4th element (`-i 3`) in an array stored in a file at `./data/a.arr`:
+Show the 4th element (`-i 3`) in an array stored in a file at `./data/a.f32`:
 
-`arrayviewer ./data/a.arr -i 3`
+`arrayviewer ./data/a.f32 -i 3`
 
 produces something like,
 
@@ -18,7 +18,7 @@ produces something like,
 
 Show the 10th element, with more context (`-c 5`).
 
-`arrayviewer ./data/a.arr -i 9 -c 5`
+`arrayviewer ./data/a.f32 -i 9 -c 5`
 
 might produce,
 ```
@@ -29,7 +29,7 @@ might produce,
 
 Show some extra information with `-v`,
 
-`arrayviewer ./data/a.arr -i 9 -c 5 -v`
+`arrayviewer ./data/a.f32 -i 9 -c 5 -v`
 
 ```
 Length: 150528
@@ -37,9 +37,26 @@ Length: 150528
 -->127.25633239746094
 136.88494873046875, 126.36851501464844, 127.19410705566406, 136.8431396484375, 126.31245422363281, ...]
 ```
+# Extensions
+Array type is inferred from a file's extension. An extensions is mapped to a `TypedArray` in the
+following way:
+```javascript
+{
+	".i8" : Int8Array,
+	".u8" : Uint8Array,
+	".i16" : Int16Array,
+	".u16" : Uint16Array,
+	".i32" : Int32Array,
+	".u32" : Uint32Array,
+	".f32" : Float32Array,
+	".f64" : Float64Array
+}
+```
+If none of these match the file extension (and no metadata file is provided), the data will be interpreted as a `Float32Array`.
+
 # Metadata
 
-`arrayviewer ./data/a.arr -i 9 -c 6 -m`
+`arrayviewer ./data/a.f32 -i 9 -c 6 -m`
 
 If the `-m` option is specified it will also look for a file of the same name
 as the array with the `.meta` extension. The `meta` file has the following format
@@ -77,7 +94,7 @@ providing a meta file allows you to index into an array using
 Write compatible arrays from numpy like this,
 ```python
 # given array 'a'
-f = open('./data/a.arr', 'wb')
+f = open('./data/a.f32', 'wb')
 f.write(a.astype(np.float32).tostring())
 f.close
 ```
