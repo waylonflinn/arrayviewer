@@ -42,6 +42,10 @@ function showIndex(a, index, context){
 
 var META_EXT = '.meta';
 
+/* exits if there's an error or if object is null
+   if object is null the message is shown
+   if err is not null that's shown
+ */
 function handleError(err, obj, message){
 
 	if(!obj){
@@ -148,14 +152,16 @@ if(require.main === module){
 		.demand(1)
 		.default('i', 0).alias('i', 'index')
 		.describe('i', 'index of element in array to show (row in shaped mode)')
+		.default('c', 4).alias('c', 'context')
+		.describe('c', 'context around element to show (on both sides)')
+		.default('t', "float32").alias('t', 'type')
+		.describe('t', "type to use for array")
+		.boolean('v').describe('v', 'show array info header')
+		.boolean('m').describe('m', 'look for metadata (.meta)')
 		.default('j', undefined)
 		.describe('j', 'column in array to show (requires meta)')
 		.default('k', undefined)
 		.describe('k', 'column in array to show (requires meta)')
-		.default('c', 4).alias('c', 'context')
-		.describe('c', 'context around element to show (on both sides)')
-		.boolean('m').describe('m', 'look for metadata (.meta)')
-		.boolean('v').describe('v', 'show array info header')
 		.help('h').alias('h', 'help')
 		.argv
 
@@ -201,8 +207,17 @@ if(require.main === module){
 		});
 	} else {
 
-		var ext = path.extname(arr_path);
-		var constructor = constructorFromExt(ext);
+		var constructor;
+		if(argv.t){
+			var type = argv.t;
+			if(!(type in type_map)){
+				handleError("Type must be one of: " + Object.keys(type_map).join(", "), type);
+			}
+			constructor = type_map[type];
+		} else {
+			var ext = path.extname(arr_path);
+			constructor = constructorFromExt(ext);
+		}
 		aloader.load(arr_path, constructor, function(err, arr){
 
 			handleError(err, arr, "Couldn't load array at: " + arr_path);

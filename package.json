@@ -1,5 +1,13 @@
-{ "author": "Waylon Flinn <waylonflinn@gmail.com>",
+{ "name": "arrayviewer",
+  "description": "View binary array data",
+  "version": "2.1.2",
+  "author": "Waylon Flinn <waylonflinn@gmail.com>",
   "license": "MIT",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/waylonflinn/arrayviewer.git"
+  },
   "bugs": {
     "url": "https://github.com/waylonflinn/arrayloader/issues"
   },
@@ -9,21 +17,13 @@
       "floader" : "^1.0.1",
       "yargs" : "^3.32.0"
   },
-  "description": "View binary array data",
   "homepage": "https://github.com/waylonflinn/arrayviewer",
   "keywords": [
     "TypedArray",
     "binary",
     "data"
   ],
-  "main": "index.js",
   "bin": {
       "arrayviewer" : "index.js"
-  },
-  "name": "arrayviewer",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/waylonflinn/arrayviewer.git"
-  },
-  "version": "2.1.1"
+  }
 }
