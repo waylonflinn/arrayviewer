@@ -62,17 +62,19 @@ function showHeader(arr, meta){
 
 	console.log("Length: " + arr.length);
 	if(meta){
-		var computed_size = 1;
-		for(var i = 0; i < meta.shape.length; i++){
-			computed_size *= meta.shape[i];
+		if(meta.shape){
+			var computed_size = 1;
+			for(var i = 0; i < meta.shape.length; i++){
+				computed_size *= meta.shape[i];
+			}
 		}
 
 		var coord_string = meta.coords ? " ("+JSON.stringify(meta.coords)+")": "";
 
-		console.log("Shape:  " + JSON.stringify(meta.shape));
-		console.log("Type:   " + meta.type);
-		console.log("Valid:  " + (computed_size == arr.length));
-		console.log("Index:  " + meta.index + coord_string);
+		if(meta.shape) console.log("Shape:  " + JSON.stringify(meta.shape));
+		if(meta.type) console.log("Type:   " + meta.type);
+		if(meta.shape) console.log("Valid:  " + (computed_size == arr.length));
+		if(meta.index) console.log("Index:  " + meta.index + coord_string);
 
 	}
 }
@@ -89,14 +91,14 @@ var type_map = {
 };
 
 var extension_map = {
-	".i8" : Int8Array,
-	".u8" : Uint8Array,
-	".i16" : Int16Array,
-	".u16" : Uint16Array,
-	".i32" : Int32Array,
-	".u32" : Uint32Array,
-	".f32" : Float32Array,
-	".f64" : Float64Array
+	".i8" : "int8",
+	".u8" : "uint8",
+	".i16" : "int16",
+	".u16" : "uint16",
+	".i32" : "int32",
+	".u32" : "uint32",
+	".f32" : "float32",
+	".f64" : "float64"
 };
 
 function constructorFromType(type){
@@ -108,13 +110,13 @@ function constructorFromType(type){
 		return Float32Array
 }
 
-function constructorFromExt(ext){
+function typeFromExt(ext){
 	ext = ext.toLowerCase();
 
-	if (ext in extension_map)
+	if(ext in extension_map)
 		return extension_map[ext];
 	else
-		return Float32Array
+		return "float32";
 }
 
 function toLinearIndex(shape, coords){
@@ -154,7 +156,7 @@ if(require.main === module){
 		.describe('i', 'index of element in array to show (row in shaped mode)')
 		.default('c', 4).alias('c', 'context')
 		.describe('c', 'context around element to show (on both sides)')
-		.default('t', "float32").alias('t', 'type')
+		.default('t').alias('t', 'type')
 		.describe('t', "type to use for array")
 		.boolean('v').describe('v', 'show array info header')
 		.boolean('m').describe('m', 'look for metadata (.meta)')
@@ -208,21 +210,24 @@ if(require.main === module){
 	} else {
 
 		var constructor;
+		var type;
 		if(argv.t){
-			var type = argv.t;
+			type = argv.t;
 			if(!(type in type_map)){
 				handleError("Type must be one of: " + Object.keys(type_map).join(", "), type);
 			}
+
 			constructor = type_map[type];
 		} else {
 			var ext = path.extname(arr_path);
-			constructor = constructorFromExt(ext);
+			type = typeFromExt(ext);
+			constructor = constructorFromType(type);
 		}
 		aloader.load(arr_path, constructor, function(err, arr){
 
 			handleError(err, arr, "Couldn't load array at: " + arr_path);
 
-			if(argv.v) showHeader(arr, null);
+			if(argv.v) showHeader(arr, {"type" : type});
 
 			console.log(showIndex(arr, index, context));
 		});
