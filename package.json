@@ -1,6 +1,6 @@
 { "name": "arrayviewer",
   "description": "View binary array data",
-  "version": "2.1.2",
+  "version": "2.2.0",
   "author": "Waylon Flinn <waylonflinn@gmail.com>",
   "license": "MIT",
   "main": "index.js",
@@ -13,8 +13,7 @@
   },
   "homepage": "https://github.com/waylonflinn/weblas",
   "dependencies": {
-      "arrayloader": "^1.0.1",
-      "floader" : "^1.0.1",
+      "arrayloader": "^2.2.1",
       "yargs" : "^3.32.0"
   },
   "homepage": "https://github.com/waylonflinn/arrayviewer",

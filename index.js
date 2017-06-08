@@ -8,7 +8,6 @@
 	node arrayviewer path index context
  */
 var aloader = require('arrayloader'),
-	floader = require('floader'),
 	path = require('path');
 
 
@@ -79,46 +78,6 @@ function showHeader(arr, meta){
 	}
 }
 
-var type_map = {
-	"int8" : Int8Array,
-	"uint8" : Uint8Array,
-	"int16" : Int16Array,
-	"uint16" : Uint16Array,
-	"int32" : Int32Array,
-	"uint32" : Uint32Array,
-	"float32" : Float32Array,
-	"float64" : Float64Array
-};
-
-var extension_map = {
-	".i8" : "int8",
-	".u8" : "uint8",
-	".i16" : "int16",
-	".u16" : "uint16",
-	".i32" : "int32",
-	".u32" : "uint32",
-	".f32" : "float32",
-	".f64" : "float64"
-};
-
-function constructorFromType(type){
-	type = type.toLowerCase();
-
-	if (type in type_map)
-		return type_map[type];
-	else
-		return Float32Array
-}
-
-function typeFromExt(ext){
-	ext = ext.toLowerCase();
-
-	if(ext in extension_map)
-		return extension_map[ext];
-	else
-		return "float32";
-}
-
 function toLinearIndex(shape, coords){
 	var index = 0,
 		subspace = 1;
@@ -171,6 +130,7 @@ if(require.main === module){
 		index = argv.i,
 		context = argv.c;
 
+	// look for meta file?
 	if(argv.m){
 
 		path_obj = path.parse(arr_path);
@@ -178,13 +138,9 @@ if(require.main === module){
 		meta_path = path_obj.dir + "/" + path_obj.name + META_EXT;
 
 		// look for meta file
-		floader.load(meta_path, function(err, meta_string){
+		aloader.load(meta_path, function(err, meta){
 
-			handleError(err, meta_string, "Couldn't load meta data at: " + meta_path);
-
-			var meta = JSON.parse(meta_string);
-
-			var constructor = constructorFromType(meta.type);
+			handleError(err, "Couldn't load meta data at: " + meta_path);
 
 			if(argv.j != void(0) || argv.k != void(0)){
 				var j = parseInt(argv.j) || 0;
@@ -198,7 +154,7 @@ if(require.main === module){
 				meta.coords = fromLinearIndex(meta.shape, meta.index);
 			}
 
-			aloader.load(arr_path, constructor, function(err, arr){
+			aloader.load(arr_path, type, function(err, arr){
 
 				handleError(err, arr, "Couldn't load array at: " + arr_path);
 
@@ -209,21 +165,10 @@ if(require.main === module){
 		});
 	} else {
 
-		var constructor;
 		var type;
-		if(argv.t){
-			type = argv.t;
-			if(!(type in type_map)){
-				handleError("Type must be one of: " + Object.keys(type_map).join(", "), type);
-			}
+		if(argv.t) type = argv.t;
 
-			constructor = type_map[type];
-		} else {
-			var ext = path.extname(arr_path);
-			type = typeFromExt(ext);
-			constructor = constructorFromType(type);
-		}
-		aloader.load(arr_path, constructor, function(err, arr){
+		aloader.load(arr_path, type, function(err, arr, type){
 
 			handleError(err, arr, "Couldn't load array at: " + arr_path);
 
@@ -232,8 +177,7 @@ if(require.main === module){
 			console.log(showIndex(arr, index, context));
 		});
 	}
-}
-else {
+} else {
 	// nope, just expose our functions
 	module.exports = {
 		"showIndex" : showIndex,
