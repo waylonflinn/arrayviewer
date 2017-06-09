@@ -21,13 +21,13 @@ function showIndex(a, index, context){
 	}
 	if(index > 0){
 		for(i = Math.max(index - context, 0); i < index && i < a.length; i++ ){
-			result += a[i] + ", ";
+			result += JSON.stringify(a[i]) + ", ";
 		}
 	}
-	result += "\n-->" + a[index] + "\n";
+	result += "\n-->" + JSON.stringify(a[index]) + "\n";
 
 	for(i = index + 1; i < (index + 1 + context) && i < a.length; i++ ){
-		result += a[i] + ", ";
+		result += JSON.stringify(a[i]) + ", ";
 	}
 
 	if(i < a.length){
