@@ -37,11 +37,16 @@ Length: 150528
 -->127.25633239746094
 136.88494873046875, 126.36851501464844, 127.19410705566406, 136.8431396484375, 126.31245422363281, ...]
 ```
-# Extensions
-Array type is inferred from a file's extension. An extensions is mapped to a `TypedArray` in the
+# Types
+Array type is inferred from a file's extension and can be overridden with the `-t`
+option.
+
+`arrayviewer ./data/a.arr -t int32`
+
+Extensions are mapped to a `TypedArray` in the
 following way,
 
-extension | TypedArray | numpy dtype
+extension | TypedArray | type
 ---------|------------|------------
 i8   | `Int8Array`  | int8
 u8   | `Uint8Array` | uint8
@@ -52,19 +57,20 @@ u32  | `Uint32Array` | uint32
 f32  | `Float32Array`| float32
 f64  | `Float64Array` | float64
 
-or (for non-binary types) like this,
+or (for non-binary types) to Javascript types like this,
 
-extension | type
----------|-------
-json   | json
-key   | json
-txt  | str
-csv  | str
-tsv  | str
+extension | Result Type | type
+---------|-----------|------
+json   | Object | json
+key   | Object | json
+txt  | String | str
+csv  | String | str
+tsv  | String | str
 
-If none of these match the file extension (and no metadata file is provided), the data will be interpreted as a `Uint8Array`.
+Any value from the `type` column may be supplied with the `-t` option.
 
-This type inference can also be overridden with the `-t` option (example `-t int32`).
+If none of these match the file extension (and no explicit type or metadata file is provided), the data will be interpreted as a `Uint8Array`.
+
 
 # Metadata
 
@@ -80,24 +86,12 @@ as the array with the `.meta` extension. The `meta` file has the following forma
 }
 ```
 
-`type` is a string that maps to a `TypedArray` in the following way.
+`type` should be a string containing any of the values listed in the "type" column from the tables above.
 
-```javascript
-{
-	"int8" : Int8Array,
-	"uint8" : Uint8Array,
-	"int16" : Int16Array,
-	"uint16" : Uint16Array,
-	"int32" : Int32Array,
-	"uint32" : Uint32Array,
-	"float32" : Float32Array,
-	"float64" : Float64Array
-}
-```
 
 These values match the [numpy dtypes](http://docs.scipy.org/doc/numpy-1.10.1/user/basics.types.html)
 
-In addition to allowing parsing of array types other than `Float32Array`,
+In addition to allowing you to specify a type,
 providing a meta file allows you to index into an array using
 `-i`, `-j`, `-k` to specify row, column and channel, respectively.
 
