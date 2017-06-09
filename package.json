@@ -1,6 +1,6 @@
 { "name": "arrayviewer",
   "description": "View binary array data",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "author": "Waylon Flinn <waylonflinn@gmail.com>",
   "license": "MIT",
   "main": "index.js",
