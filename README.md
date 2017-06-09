@@ -39,20 +39,32 @@ Length: 150528
 ```
 # Extensions
 Array type is inferred from a file's extension. An extensions is mapped to a `TypedArray` in the
-following way:
-```javascript
-{
-	".i8" : Int8Array,
-	".u8" : Uint8Array,
-	".i16" : Int16Array,
-	".u16" : Uint16Array,
-	".i32" : Int32Array,
-	".u32" : Uint32Array,
-	".f32" : Float32Array,
-	".f64" : Float64Array
-}
-```
-If none of these match the file extension (and no metadata file is provided), the data will be interpreted as a `Float32Array`.
+following way,
+
+extension | TypedArray | numpy dtype
+---------|------------|------------
+i8   | `Int8Array`  | int8
+u8   | `Uint8Array` | uint8
+i16  | `Int16Array` | int16
+u16  | `Uint16Array`| uint16
+i32  | `Int32Array` | int32
+u32  | `Uint32Array` | uint32
+f32  | `Float32Array`| float32
+f64  | `Float64Array` | float64
+
+or (for non-binary types) like this,
+
+extension | type
+---------|-------
+json   | json
+key   | json
+txt  | str
+csv  | str
+tsv  | str
+
+If none of these match the file extension (and no metadata file is provided), the data will be interpreted as a `Uint8Array`.
+
+This type inference can also be overridden with the `-t` option (example `-t int32`).
 
 # Metadata
 
