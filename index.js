@@ -49,7 +49,7 @@ function handleError(err, obj, message){
 
 	if(!obj){
 		console.log(message);
-		console.log('\t' + err.message);
+		console.log('\t' + (err.message ? err.message : err));
 		process.exit(1);
 	} else if(err) {
 		console.log(err);
