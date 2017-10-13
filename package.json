@@ -1,6 +1,6 @@
 { "name": "arrayviewer",
   "description": "View binary array data",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "author": "Waylon Flinn <waylonflinn@gmail.com>",
   "license": "MIT",
   "main": "index.js",
@@ -9,11 +9,11 @@
     "url": "git://github.com/waylonflinn/arrayviewer.git"
   },
   "bugs": {
-    "url": "https://github.com/waylonflinn/arrayloader/issues"
+    "url": "https://github.com/waylonflinn/arrayviewer/issues"
   },
-  "homepage": "https://github.com/waylonflinn/weblas",
+  "homepage": "https://github.com/waylonflinn/arrayviewer",
   "dependencies": {
-      "arrayloader": "^4.0.0",
+      "arrayloader": "^4.0.1",
       "yargs" : "^3.32.0"
   },
   "homepage": "https://github.com/waylonflinn/arrayviewer",
